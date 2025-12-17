@@ -5,34 +5,46 @@ export const runtime = 'edge'
 // Mock transactions - in production, fetch from database based on user ID
 const mockTransactions = [
   {
-    id: 'TXN-001',
+    id: '550e8400-e29b-41d4-a716-446655440001',
+    user_id: '550e8400-e29b-41d4-a716-446655440000',
     type: 'receive',
     amount: 500.00,
     currency: 'USD',
-    from: 'EGW-999',
-    to: 'EGW-001',
-    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    from: '550e8400-e29b-41d4-a716-446655440999',
+    to: '550e8400-e29b-41d4-a716-446655440000',
     status: 'completed',
+    source: 'web',
+    created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    approved_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 3600000).toISOString(),
+    completed_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 7200000).toISOString(),
   },
   {
-    id: 'TXN-002',
+    id: '550e8400-e29b-41d4-a716-446655440002',
+    user_id: '550e8400-e29b-41d4-a716-446655440000',
     type: 'send',
     amount: 1200.00,
     currency: 'EUR',
-    from: 'EGW-001',
-    to: 'EGW-888',
-    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    from: '550e8400-e29b-41d4-a716-446655440000',
+    to: '550e8400-e29b-41d4-a716-446655440888',
     status: 'completed',
+    source: 'web',
+    created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    approved_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000 + 1800000).toISOString(),
+    completed_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000 + 3600000).toISOString(),
   },
   {
-    id: 'TXN-003',
-    type: 'receive',
-    amount: 5000.00,
-    currency: 'CNY',
-    from: 'EGW-777',
-    to: 'EGW-001',
-    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    status: 'completed',
+    id: '550e8400-e29b-41d4-a716-446655440003',
+    user_id: '550e8400-e29b-41d4-a716-446655440000',
+    type: 'send',
+    amount: 250.00,
+    currency: 'USD',
+    from: '550e8400-e29b-41d4-a716-446655440000',
+    to: '550e8400-e29b-41d4-a716-446655440777',
+    status: 'pending', // Web Beta: awaiting admin approval
+    source: 'web',
+    created_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+    approved_at: null,
+    completed_at: null,
   },
 ]
 
@@ -43,6 +55,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       transactions: mockTransactions,
+      note: 'Web Beta: Some transactions may be pending admin approval',
     })
   } catch (error) {
     console.error('Transactions error:', error)

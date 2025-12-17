@@ -3,17 +3,23 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 
 interface User {
-  id: string
+  id: string // UUID user_id
   email: string
+  phone: string
   name: string
+  email_verified: boolean
+  phone_verified: boolean
+  kyc_status: "pending" | "approved" | "rejected"
+  signup_source: "web" | "android" | "ios"
   balance: Record<string, number>
+  created_at: string
 }
 
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
   signIn: (email: string, password: string) => Promise<boolean>
-  signUp: (email: string, password: string, name: string) => Promise<boolean>
+  signUp: (email: string, password: string, name: string, phone: string) => Promise<boolean>
   signOut: () => void
   updateBalance: (currency: string, amount: number) => void
 }
@@ -52,12 +58,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const signUp = async (email: string, password: string, name: string) => {
+  const signUp = async (email: string, password: string, name: string, phone: string) => {
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, phone, signup_source: "web" }),
       })
 
       if (response.ok) {

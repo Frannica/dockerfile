@@ -69,6 +69,82 @@ export default function DashboardPage() {
           <p className="text-muted-foreground">Manage your multi-currency wallet</p>
         </div>
 
+        {/* Web Beta & KYC Status Notifications */}
+        <div className="space-y-4 mb-8">
+          <Card className="border-blue-500/50 bg-blue-500/5">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <div className="text-blue-500 text-xl">ℹ️</div>
+                <div>
+                  <h3 className="font-semibold text-blue-600 dark:text-blue-400 mb-1">
+                    Web Beta - Limited Features
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Your EGWallet account works on web and mobile. Web Beta: limited features until app launch. 
+                    Transactions require admin approval for execution.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {user.kyc_status === 'pending' && (
+            <Card className="border-yellow-500/50 bg-yellow-500/5">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <div className="text-yellow-500 text-xl">⚠️</div>
+                  <div>
+                    <h3 className="font-semibold text-yellow-600 dark:text-yellow-400 mb-1">
+                      KYC Verification Required
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Complete KYC verification to send and receive money. Maximum wallet balance: $250,000.
+                    </p>
+                    <Button size="sm" variant="outline">Submit KYC Documents</Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {user.kyc_status === 'approved' && (
+            <Card className="border-green-500/50 bg-green-500/5">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <div className="text-green-500 text-xl">✅</div>
+                  <div>
+                    <h3 className="font-semibold text-green-600 dark:text-green-400 mb-1">
+                      KYC Verified
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Your account is verified. You can send and receive money (pending admin approval during Web Beta).
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {user.kyc_status === 'rejected' && (
+            <Card className="border-red-500/50 bg-red-500/5">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <div className="text-red-500 text-xl">❌</div>
+                  <div>
+                    <h3 className="font-semibold text-red-600 dark:text-red-400 mb-1">
+                      KYC Verification Failed
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Your KYC verification was rejected. Please resubmit with correct information.
+                    </p>
+                    <Button size="sm" variant="outline">Resubmit KYC</Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
         {/* Balance Overview */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
           <Card className="col-span-full">

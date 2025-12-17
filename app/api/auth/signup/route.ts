@@ -5,34 +5,48 @@ export const runtime = 'edge'
 // Mock user database (in production, use a real database)
 const mockUsers: any[] = []
 
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0
+    const v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name } = await request.json()
+    const { email, password, name, phone, signup_source = 'web' } = await request.json()
 
-    if (!email || !password || !name) {
+    if (!email || !password || !name || !phone) {
       return NextResponse.json(
-        { error: 'Email, password, and name are required' },
+        { error: 'Email, password, name, and phone are required' },
         { status: 400 }
       )
     }
 
-    // Check if user already exists
-    const existingUser = mockUsers.find((u) => u.email === email)
+    // Check if user already exists (email or phone)
+    const existingUser = mockUsers.find((u) => u.email === email || u.phone === phone)
     if (existingUser) {
       return NextResponse.json(
-        { error: 'Email already in use' },
+        { error: existingUser.email === email ? 'Email already in use' : 'Phone number already in use' },
         { status: 409 }
       )
     }
 
-    // Create new user
+    // Create new user following the unified schema
     const newUser = {
-      id: `EGW-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      id: generateUUID(), // UUID user_id
       email,
+      phone,
       name,
-      password, // In production, hash this!
+      password, // In production, hash this with bcrypt!
+      email_verified: false,
+      phone_verified: false,
+      kyc_status: 'pending',
+      signup_source,
+      created_at: new Date().toISOString(),
       balance: {
-        USD: 1000.00, // Starting bonus
+        USD: 0, // Web Beta: no starting bonus, requires KYC first
         EUR: 0,
         CNY: 0,
         NGN: 0,
@@ -50,7 +64,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       user: userWithoutPassword,
-      message: 'Account created successfully',
+      message: 'Account created successfully. Please complete KYC verification to start using EGWallet.',
+      note: 'Your EGWallet account works on web and mobile. Web Beta: limited features until app launch.',
     })
   } catch (error) {
     console.error('Sign up error:', error)

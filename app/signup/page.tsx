@@ -12,6 +12,7 @@ import { Wallet } from "lucide-react"
 export default function SignUpPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
@@ -33,14 +34,19 @@ export default function SignUpPage() {
       return
     }
 
+    if (!phone || phone.length < 10) {
+      setError("Please enter a valid phone number")
+      return
+    }
+
     setLoading(true)
 
-    const success = await signUp(email, password, name)
+    const success = await signUp(email, password, name, phone)
     
     if (success) {
       router.push("/dashboard")
     } else {
-      setError("Failed to create account. Email may already be in use.")
+      setError("Failed to create account. Email or phone may already be in use.")
       setLoading(false)
     }
   }
@@ -54,7 +60,7 @@ export default function SignUpPage() {
           </div>
           <CardTitle className="text-2xl">Create Your E.G. Wallet</CardTitle>
           <CardDescription>
-            Sign up to start sending and receiving money
+            Your EGWallet account works on web and mobile
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -84,6 +90,21 @@ export default function SignUpPage() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="phone" className="text-sm font-medium">
+                Phone Number
+              </label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="+1 234 567 8900"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 required
                 disabled={loading}
               />
@@ -124,6 +145,12 @@ export default function SignUpPage() {
                 {error}
               </div>
             )}
+
+            <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-sm">
+              <p className="text-blue-600 dark:text-blue-400">
+                <strong>Web Beta:</strong> Limited features until app launch. Complete KYC verification to start using EGWallet.
+              </p>
+            </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Creating account..." : "Sign Up"}

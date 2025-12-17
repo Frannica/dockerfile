@@ -5,10 +5,16 @@ export const runtime = 'edge'
 // Mock user database (in production, use a real database)
 const mockUsers = [
   {
-    id: "EGW-001",
+    id: "550e8400-e29b-41d4-a716-446655440000",
     email: "demo@egwallet.com",
-    password: "demo123",
+    phone: "+1234567890",
     name: "Demo User",
+    password: "demo123",
+    email_verified: true,
+    phone_verified: true,
+    kyc_status: "approved",
+    signup_source: "web",
+    created_at: "2024-01-01T00:00:00.000Z",
     balance: {
       USD: 5230.50,
       EUR: 4810.20,

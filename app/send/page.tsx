@@ -60,22 +60,22 @@ export default function SendMoneyPage() {
           amount: amountNum,
           currency,
           senderId: user?.id,
+          senderKycStatus: user?.kyc_status,
         }),
       })
 
       const data = await response.json()
 
       if (response.ok) {
-        // Update local balance
-        updateBalance(currency, -amountNum)
+        // Web Beta: Don't update balance immediately - awaiting admin approval
         setSuccess(true)
         setRecipientId("")
         setAmount("")
         
-        // Redirect to dashboard after 2 seconds
+        // Redirect to dashboard after 3 seconds
         setTimeout(() => {
           router.push("/dashboard")
-        }, 2000)
+        }, 3000)
       } else {
         setError(data.error || "Failed to send money")
       }
@@ -98,11 +98,20 @@ export default function SendMoneyPage() {
           <div className="max-w-2xl mx-auto">
             <Card className="text-center">
               <CardContent className="pt-12 pb-12">
-                <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold mb-2">Money Sent Successfully!</h2>
-                <p className="text-muted-foreground mb-6">
-                  {amount} {currency} has been sent to wallet {recipientId}
+                <CheckCircle2 className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold mb-2">Transfer Request Submitted!</h2>
+                <p className="text-muted-foreground mb-4">
+                  {amount} {currency} transfer to wallet {recipientId}
                 </p>
+                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-sm mb-6 max-w-md mx-auto">
+                  <p className="font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                    🕐 Web Beta: Pending Admin Approval
+                  </p>
+                  <p className="text-muted-foreground">
+                    Your transfer request has been submitted and is awaiting admin approval for execution. 
+                    Instant transfers will be available when the mobile app launches.
+                  </p>
+                </div>
                 <Button asChild>
                   <Link href="/dashboard">Return to Dashboard</Link>
                 </Button>
@@ -236,10 +245,13 @@ export default function SendMoneyPage() {
 
                 <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-sm">
                   <p className="font-semibold text-blue-600 dark:text-blue-400 mb-1">
-                    ℹ️ Internal Transfer
+                    ℹ️ Web Beta - Internal Transfer Only
+                  </p>
+                  <p className="text-muted-foreground mb-2">
+                    Transfers are only available between E.G. Wallet users. External transfers to banks or other services are not supported.
                   </p>
                   <p className="text-muted-foreground">
-                    Transfers are only available between E.G. Wallet users. External transfers to banks or other services are not supported.
+                    <strong>Web Beta:</strong> All transactions require admin approval before execution. Instant transfers will be available when the mobile app launches.
                   </p>
                 </div>
               </form>
