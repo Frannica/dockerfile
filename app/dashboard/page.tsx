@@ -33,10 +33,18 @@ export default function DashboardPage() {
       return
     }
 
-    // Fetch transactions
+    // Fetch transactions from Express backend
     const fetchTransactions = async () => {
       try {
-        const response = await fetch("/api/transactions")
+        const token = localStorage.getItem("egwallet_token")
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://your-backend.onrender.com"
+        
+        const response = await fetch(`${API_BASE_URL}/transactions`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        })
+        
         if (response.ok) {
           const data = await response.json()
           setTransactions(data.transactions || [])

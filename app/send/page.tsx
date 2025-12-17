@@ -52,15 +52,19 @@ export default function SendMoneyPage() {
     setLoading(true)
 
     try {
-      const response = await fetch("/api/transfer", {
+      const token = localStorage.getItem("egwallet_token")
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://your-backend.onrender.com"
+      
+      const response = await fetch(`${API_BASE_URL}/transfer`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify({
           recipientId,
           amount: amountNum,
           currency,
-          senderId: user?.id,
-          senderKycStatus: user?.kyc_status,
         }),
       })
 
