@@ -1,2 +1,4 @@
 [functions]
   directory = "netlify/functions"
+[build.environment]
+  NEXT_USE_APP_ROUTER = "true"
